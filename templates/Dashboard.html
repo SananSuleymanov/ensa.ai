@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/dashboard.css')}}">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
+    
+</head>
+
+<body>
+  <img src="../static/ensa.png" width="180px" height="50px">
+<p>{{data}}
+{%with messages = get_flashed_messages()%}
+{%if messages%}
+<ul>
+    {%for message in messages%}
+    <li>{{message}}</li>
+    {%endfor%}
+</ul>
+{%endif%}
+{%endwith%}
+
+<body>
+  <div class="data">
+    
+    <div class="box">
+      <p class="head-1">PREDICTION</p>
+      <!--<p class="score" >L:{{val0}} M:{{val1}} H:{{val2}}</p>-->
+      <p class="number-3">{{prediction}}</p>
+    </div>
+    <div class="box">
+      <p class="head-1">HUMIDITY</p>
+      <p class="number-2">{{humidity}}</p>
+    </div>
+    
+    <div class="box">
+      <p class="head-1">CO2</p>
+      <p class="number-1">{{co2}}</p>
+    </div>
+  </div>
+
+  
+  
+  <div class="data1">
+    <div class="choice">
+      <form method="post" action="">
+        <select name="modul_option" >
+          {%for option in options%}
+          <option value="{{option}}">{{option}}</option>
+          {%endfor%}
+        </select>
+        <p><input type="submit" value="Submit"></p>
+      </form>
+    </div>
+    <div>
+      <div id="graph" class="gr"></div>
+    </div>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+      var graph1 = {{graph | safe}};
+      
+      Plotly.plot('graph', graph1);
+  
+    </script> 
+  
+  
+    
+  </div>
+  
+
+
+ 
+      
+    
+  </div>
+  
+</body>
+
+</html>

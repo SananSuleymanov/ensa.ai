@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login to DASHBOARD</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/login.css')}}">
+</head>
+<body>
+    <div class="login">
+        <img class= 'image'src="../static/ensa.png" width="190px" height="50px"  >
+     
+        {%if error%}
+         <p><strong>Error: </strong>{{error}}
+            {%endif%}
+        <div class="login-box">
+            <h1>LOGIN</h1>
+            <form action="/login" method="post">
+                <p><input type="text" name="nm" id="name" placeholder="Email"></p>
+                <p><input type="password" name="pw" id="password" placeholder="Password"></p>
+                <p><input type="submit" name="submit" value="LOGIN" style="height: 20px; width:170px;
+                    background: #2a63f3;
+                    color: white;
+                    border-style: outset;
+                    border-color: #2a63f3;
+                    font: bold15px arial,sans-serif;
+                    text-shadow: none;" ></p>
+            </form>
+        </div>
+    
+    </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+.data{
+    display: inline-block;
+  
+  }
+  .data1{
+    float: right;
+    padding-left: 60px;
+  }
+
+  
+  body{
+    background-color: rgb(221, 240, 202);
+    position: fixed;
+  }
+
+  .box{
+    
+      width: 200px;
+    height: 140px;
+    background-color: #ffffff;
+    margin-left: 40px;
+    margin-top: 10px;
+    padding: 4px;
+    border-radius: 15px;
+  }
+
+  .head-1{
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .number-1{
+    margin-bottom: 0px;
+    margin-top: 30px;
+    text-align: center;
+    color: blue;
+    font-size: 25px;
+    font-weight: bold;
+  }
+  .number-2{
+    margin-bottom: 0px;
+    margin-top: 30px;
+    text-align: center;
+    color: red;
+    font-size: 25px;
+    font-weight: bold;
+  }
+  .number-3{
+    margin-bottom: 0px;
+    margin-top: 30px;
+    text-align: center;
+    color: green;
+    font-size: 25px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
