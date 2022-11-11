@@ -56,3 +56,17 @@
     font-weight: bold;
     text-transform: uppercase;
   }
+
+  .gr{
+    margin-top: 10px;
+  }
+
+  .pop-add{
+    position: absolute;
+    background-color: green;
+    width: 200px;
+    height: 120px;
+    top: 20px;
+    margin-left: 500px;
+    border-radius: 5px;
+  }
