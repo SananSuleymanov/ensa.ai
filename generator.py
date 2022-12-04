@@ -4,7 +4,7 @@ import secrets
 
 class uuid_generator():
     def __init__(self):
-        self.full= string.ascii_letters+string.digits+string.punctuation
+        self.full= string.ascii_letters+string.digits
         self.uuid=''
         self.length= 12
 

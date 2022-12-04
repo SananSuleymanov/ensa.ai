@@ -6,20 +6,61 @@
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/signup.css')}}">
 
     <style>
+        .form-el {text-align: center; padding: 5px;}
         p{text-align: center;}
         h1{text-align: center;}
     </style>
 </head>
 
 <body>
-    <h1>SIGN UP</h1>
+    <div class="login">
+        <img class= 'image'src="../static/ensa.png" width="190px" height="50px"  >
+
+        <div class="login-box">
+            <h1>SIGN UP</h1>
+    {% with messages =get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for message in messages %}
+        <li>{{message}}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
     {%if error%}
      <p><strong>Error: </strong>{{error}}
         {%endif%}
     <form action="/signup" method="post">
-        <p><input type="text" name= "nm" id="email" placeholder="Email"></p>
-        <p><input type="password" name= "pw" id="password" placeholder="Password"></p>
-        <p><input type="password" name= "pw_r" id="r_password" placeholder="Repeat Password"></p>
+        {{ form.csrf_token }}
+        <!--<p><input type="text" name= "Email" id="email" placeholder="Email"></p>
+        <p><input type="password" name= "Password" id="password" placeholder="Password"></p>
+        <p><input type="password" name= "confirm" id="r_password" placeholder="Repeat Password"></p>
+        <p><input type="submit" name="SUBMIT"></p>-->
+        <div class="form-el">{{form.email()}} 
+
+        {% if form.email.errors %}
+        <ul >
+            {% for error in form.email.errors %}
+            <li>{{error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        </div>
+        
+
+        <div class="form-el">{{form.password()}}</div>
+        {% if form.password.errors %}
+        <ul >
+            {% for error in form.password.errors %}
+            <li>{{error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        
+        <div class="form-el">{{form.confirm()}}</div>
         <p><input type="submit" name="SUBMIT"></p>
     </form>
+        </div>
+    </div>
 </body>

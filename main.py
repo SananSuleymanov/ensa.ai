@@ -1,6 +1,7 @@
 from flask import Flask, request, url_for, redirect, render_template, flash, jsonify, send_file
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_restful import Resource, Api
+from flask_bcrypt import Bcrypt
 import os
 from dotenv import load_dotenv
 import numpy as np
@@ -11,12 +12,14 @@ import login_user
 import sign_up
 import Data
 import plot
+from form import RegistrationForm
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key= os.getenv('SECRET_KEY')
 api = Api(app)
+bcrypt = Bcrypt(app)
 
 model = tf.keras.models.load_model('ensa.h5')
 
@@ -88,34 +91,66 @@ def visualize_hum():
 def dashboard(email):
     data = Data.sql()
     options = data.points_get(email)
-
+    uuid= data.uuid(email)
     if request.method=='POST':
-        co2_m, humidity, pred, val0, val1, val2 = data.get(request.form['modul_option'])
-        time, co2, hum = data.array()
-        hour_data = data.array()
+        try:
+            co2_m, humidity, pred, val0, val1, val2 = data.get(request.form['modul_option'], email)
+            time, co2, hum = data.array()
+            hour_data = data.array()
+            print('co2: ', co2_m)
+        except:
+            co2_m= humidity=pred=val0=val1=val2 = '--'
+            time=co2= hum = '--'
+            hour_data = [], [], []
+            print('excepted1')
         p= plot.plot_graph(hour_data)
         graph= p.plot_data()
-        return render_template('Dashboard.html',  co2 = co2_m, humidity = humidity, prediction= pred, val0 = val0,
+
+        
+        if request.form['btn']=='Submit':
+            selected=request.form['modul_option']
+            return render_template('Dashboard.html',  co2 = co2_m, humidity = humidity, prediction= pred, val0 = val0,
                            val1 = val1, val2 = val2, max1 =1500, max2 = 50, values_co2 = co2, values_hum=hum, labels = time, options = options,
-                           graph= graph, logo= 'static/ensa.png')
+                           graph= graph, uuid=uuid, selected=selected)
+
+        elif request.form['btn']=='ADD':
+            data.point_add(request.form['pcn'])
+            return render_template('Dashboard.html',  co2 = co2_m, humidity = humidity, prediction= pred, val0 = val0,
+                           val1 = val1, val2 = val2, max1 =1500, max2 = 50, values_co2 = co2, values_hum=hum, labels = time, options = data.points_get(email),
+                           graph=graph, uuid=uuid)
+
+            
     else:
-        co2_m, humidity, pred, val0, val1, val2 = data.get(options[0])
-        time, co2, hum = data.array()
-        hour_data = data.array()
+        try:
+            co2_m, humidity, pred, val0, val1, val2 = data.get(options[0], email )
+            time, co2, hum = data.array()
+            hour_data = data.array()
+        except:
+            co2_m= humidity=pred=val0=val1=val2 = '--'
+            time=co2= hum = '--'
+            hour_data = [], [], []
+            print('excepted2')
+
         p= plot.plot_graph(hour_data)
         graph= p.plot_data()
+
+        
         return render_template('Dashboard.html',  co2 = co2_m, humidity = humidity, prediction= pred, val0 = val0,
                            val1 = val1, val2 = val2, max1 =1500, max2 = 50, values_co2 = co2, values_hum=hum, labels = time, options = options,
-                           graph=graph, logo = 'static/ensa.png')
+                           graph=graph, uuid=uuid)
 
-
+'''
+Login Page
+'''
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
+
     error = None
     if request.method == 'POST':
        
-        lg = login_user.signin(request.form['nm'], request.form['pw'])
-        if lg.login_us() is False:
+        lg = login_user.signin(request.form['nm'], request.form['pw'], bcrypt=bcrypt)
+        status, _ = lg.login_us()
+        if status is False:
             error = 'Invalid username or password'
             return render_template('login.html', error=error)
         else:
@@ -128,15 +163,20 @@ def login():
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     error=None
+    form= RegistrationForm()
     if request.method=='POST':
-        sg=sign_up.signup(request.form['nm'], request.form['pw'])
-        if sg.signup_us() is False:
-            error='You already registered'
-            return render_template('sign_up.html', error=error)
+        sg=sign_up.signup(form.email.data, bcrypt.generate_password_hash(form.password.data).decode('utf-8'))
+        if form.validate_on_submit():
+            if sg.signup_us() is False:
+                error='You already registered'
+                return render_template('sign_up.html', error=error, form=form)
+            else:
+                return redirect(url_for('login', error='You were successfully signed up'))   
+            
         else:
-            return redirect(url_for('login', error='You were successfully signed up'))
+            return render_template('sign_up.html', form=form)
     else:
-        return render_template('sign_up.html')
+        return render_template('sign_up.html', form=form)
 
 if __name__ =='__main__':
     app.run(debug=True)

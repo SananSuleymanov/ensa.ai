@@ -1,6 +1,6 @@
 import psycopg2
 from dotenv import load_dotenv
-
+from generator import uuid_generator
 
 load_dotenv()
 
@@ -21,7 +21,17 @@ class signup():
             while row:
                 if str(row[1]) == self.email:
                     self.status=False
+                    break
                 row= cursor.fetchone()
-        return self.status
+            
+            
+            if self.status == True:
+                sql2= 'INSERT INTO users (uuid, email, us_password) VALUES (%s, %s, %s)'
+                u_uuid = uuid_generator().uid()
+                u_email= self.email
+                u_password= self.password
+                user_data=[u_uuid, u_email, u_password]
+                cursor.execute(sql2, user_data)
+                conn.commit()
 
-print(signup('senansuleyman051@gmail.com', 'sanan1999').signup_us())
+        return self.status
