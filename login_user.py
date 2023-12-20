@@ -4,7 +4,7 @@ import os
 
 load_dotenv()
 
-conn = psycopg2.connect('postgres://jwoowfpjmciamf:5e0d687ed33a7de3df899871d1b8c89b3306a6ef37e0e9a72b9b6ec5f44beb20@ec2-34-241-90-235.eu-west-1.compute.amazonaws.com:5432/d7r313ckpbein2',
+conn = psycopg2.connect('mongodb_database',
 sslmode= 'require')
 class signin():
     def __init__(self, email, password, bcrypt):
